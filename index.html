@@ -172,6 +172,13 @@
   <!-- Ambient Dynamic Colored Radial Glow in Background -->
   <div id="ambientGlow"></div>
 
+  <!-- Cinematic dark fade that descends from the bottom during the auto scroll-to-top -->
+  <div
+    id="scrollFadeOverlay"
+    class="fixed inset-0 pointer-events-none z-[45] opacity-0"
+    style="background: linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.95) 10%, rgba(0,0,0,0.72) 26%, rgba(0,0,0,0.38) 40%, rgba(0,0,0,0.12) 49%, rgba(0,0,0,0) 56%);"
+  ></div>
+
   <!-- ================= TOP HEADER NAVIGATION ================= -->
   <header class="w-full max-w-7xl mx-auto flex items-center justify-between z-30 relative shrink-0">
     <!-- Brand Logo -->
@@ -858,6 +865,64 @@
     let currentIndex = 0;
     let isTransitioning = false;
 
+    // ===== CINEMATIC SCROLL-TO-TOP =====
+    // Gently glides the page back to the top while a dark gradient
+    // rises from the bottom edge (fading out around the middle of the screen).
+    let scrollAnimId = null;
+
+    function cancelScrollAnim() {
+      if (scrollAnimId !== null) {
+        cancelAnimationFrame(scrollAnimId);
+        scrollAnimId = null;
+      }
+      const fade = document.getElementById('scrollFadeOverlay');
+      if (fade) fade.style.opacity = '0';
+    }
+
+    function smoothScrollToTop() {
+      const startY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if (startY <= 1) return;
+
+      cancelScrollAnim();
+
+      const fade = document.getElementById('scrollFadeOverlay');
+      if (fade) {
+        fade.style.transition = 'opacity 0.6s ease-out';
+        fade.style.opacity = '1';
+      }
+
+      const duration = Math.min(2000, Math.max(1200, startY * 6));
+      const startTime = performance.now();
+      // easeInOutCubic: gentle start, smooth glide, soft landing
+      const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      function step(now) {
+        const p = Math.min(1, (now - startTime) / duration);
+        const y = Math.round(startY * (1 - ease(p)));
+        window.scrollTo(0, y);
+
+        if (p < 1) {
+          scrollAnimId = requestAnimationFrame(step);
+        } else {
+          window.scrollTo(0, 0);
+          scrollAnimId = null;
+          if (fade) {
+            fade.style.transition = 'opacity 0.9s ease-in';
+            fade.style.opacity = '0';
+          }
+        }
+      }
+
+      scrollAnimId = requestAnimationFrame(step);
+    }
+
+    // Let the user grab control back immediately by touching / wheeling
+    ['touchstart', 'wheel', 'mousedown'].forEach(evt => {
+      window.addEventListener(evt, () => {
+        if (scrollAnimId !== null) cancelScrollAnim();
+      }, { passive: true });
+    });
+
     // LANGUAGE TOGGLE HANDLER
     function toggleLanguage() {
       currentLang = currentLang === 'vi' ? 'en' : 'vi';
@@ -974,9 +1039,7 @@
         // (skip on language toggle / initial render where direction === 'none')
         if (direction !== 'none') {
           setTimeout(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
+            smoothScrollToTop();
           }, 1000);
         }
       } else {
