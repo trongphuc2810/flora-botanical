@@ -969,6 +969,16 @@
       if (slide.isCat) {
         catTapHint.classList.remove('hidden');
         catTapHint.innerText = currentLang === 'vi' ? '✦ Chạm vào chú mèo xem chuyện gì xảy ra ✦' : '✦ Tap the cat to see what happens ✦';
+
+        // Auto scroll back to the top 1s after landing on the cat slide
+        // (skip on language toggle / initial render where direction === 'none')
+        if (direction !== 'none') {
+          setTimeout(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+          }, 1000);
+        }
       } else {
         catTapHint.classList.add('hidden');
       }
