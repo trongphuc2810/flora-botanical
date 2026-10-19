@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Flora — Botanical Floral Concept (Bilingual VN • EN)</title>
+  
+  <!-- Web fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #09090B;
+      --accent-color: #E68B23;
+      --accent-glow: rgba(230, 139, 35, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: #FFFFFF;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background-color 0.8s ease;
+    }
+
+    .font-serif-luxury {
+      font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    }
+
+    .font-garamond {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    /* AMBIENT RADIAL COLOR BACKDROP */
+    #ambientGlow {
+      position: fixed;
+      left: 50%;
+      top: 48%;
+      transform: translate(-50%, -50%);
+      width: 580px;
+      height: 580px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(9, 9, 11, 0) 70%);
+      filter: blur(55px);
+      pointer-events: none;
+      z-index: 1;
+      transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* HERO FLOWER FLOATING BREATHING */
+    @keyframes heroFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.8));
+      }
+      50% {
+        transform: translateY(-12px) rotate(1.5deg);
+        filter: drop-shadow(0 32px 45px rgba(0, 0, 0, 0.9));
+      }
+    }
+    .hero-float-anim {
+      animation: heroFloat 5.2s ease-in-out infinite;
+    }
+
+    /* FLOWER CAROUSEL SLIDE TRANSITION */
+    .flower-enter-right {
+      animation: enterFromRight 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .flower-enter-left {
+      animation: enterFromLeft 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes enterFromRight {
+      0% { opacity: 0; transform: translateX(80px) scale(0.88) rotate(4deg); }
+      100% { opacity: 1; transform: translateX(0px) scale(1) rotate(0deg); }
+    }
+    @keyframes enterFromLeft {
+      0% { opacity: 0; transform: translateX(-80px) scale(0.88) rotate(-4deg); }
+      100% { opacity: 1; transform: translateX(0px) scale(1) rotate(0deg); }
+    }
+
+    /* TEXT STAGGER REVEAL */
+    .text-slide-up {
+      animation: textSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes textSlideUp {
+      0% { opacity: 0; transform: translateY(22px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* BOTTOM FADE FOR STEM MASK */
+    .flower-fade-mask {
+      mask-image: linear-gradient(to bottom, black 72%, transparent 98%);
+      -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 98%);
+    }
+
+    /* GLASS CARD ON RIGHT */
+    .glass-card {
+      background: rgba(18, 18, 20, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    /* WARM PAPER TEXTURE FOR GRAND BOUQUET SCREEN */
+    .bouquet-paper-bg {
+      background-color: #F7F3ED;
+      color: #2C221E;
+      background-image: 
+        radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.75), transparent 75%),
+        radial-gradient(#E5DBC7 0.75px, transparent 0.75px),
+        radial-gradient(#E5DBC7 0.75px, #F7F3ED 0.75px);
+      background-size: 100% 100%, 28px 28px, 28px 28px;
+      background-position: 0 0, 0 0, 14px 14px;
+    }
+
+    /* GENTLE FLOATING BREATHING ANIMATION FOR GRAND BOUQUET */
+    @keyframes singleFlowerFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg) scale(1);
+        filter: drop-shadow(0 14px 24px rgba(60, 40, 30, 0.16));
+      }
+      50% {
+        transform: translateY(-9px) rotate(2deg) scale(1.025);
+        filter: drop-shadow(0 22px 32px rgba(60, 40, 30, 0.22));
+      }
+    }
+    .flower-float-anim {
+      animation: singleFlowerFloat 3.8s ease-in-out infinite;
+    }
+
+    /* FLOWER CLICK POP ANIMATION */
+    @keyframes flowerPopBounce {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.86) rotate(-4deg); }
+      70% { transform: scale(1.12) rotate(3deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .pop-bounce {
+      animation: flowerPopBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* GRAND BOUQUET DROP SHADOWS & HOVER JUMP EFFECT */
+    .bouquet-drop-shadow {
+      filter: drop-shadow(0 20px 28px rgba(70, 50, 40, 0.2));
+    }
+    .flower-shadow {
+      filter: drop-shadow(0 8px 12px rgba(90, 65, 50, 0.14));
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.22s ease;
+    }
+    .flower-shadow:hover, .flower-shadow:active {
+      transform: scale(1.14) translateY(-6px) !important;
+      filter: drop-shadow(0 14px 20px rgba(90, 65, 50, 0.24));
+    }
+  </style>
+</head>
+<body class="w-full min-h-screen lg:h-screen lg:overflow-hidden overflow-y-auto flex flex-col justify-between px-5 py-4 sm:px-8 sm:py-6 lg:px-12 lg:py-6 relative pb-8 sm:pb-6">
+
+  <!-- Ambient Dynamic Colored Radial Glow in Background -->
+  <div id="ambientGlow"></div>
+
+  <!-- ================= TOP HEADER NAVIGATION ================= -->
+  <header class="w-full max-w-7xl mx-auto flex items-center justify-between z-30 relative shrink-0">
+    <!-- Brand Logo -->
+    <a href="#" class="font-serif-luxury text-2xl sm:text-3xl font-bold tracking-tight text-white hover:opacity-90 transition-opacity">
+      Flora
+    </a>
+
+    <!-- Top Navigation Links & Language Switcher -->
+    <div class="flex items-center gap-4 sm:gap-8">
+      <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-xs sm:text-sm tracking-wider font-medium text-[#A0A0A8]">
+        <a href="#" id="navSpecies" class="text-white relative pb-1">
+          Loài hoa
+          <span class="absolute bottom-0 left-0 w-full h-[1.5px] bg-white"></span>
+        </a>
+        <a href="#" id="navAbout" class="hover:text-white transition-colors">Giới thiệu</a>
+        <a href="#" id="navBlog" class="hover:text-white transition-colors">Bài viết</a>
+      </nav>
+
+      <!-- Language Toggle Switcher (VN - EN) -->
+      <button 
+        id="langToggleBtn" 
+        onclick="toggleLanguage()" 
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 text-xs font-bold tracking-wider text-white transition-all shadow-xs active:scale-95"
+        title="Chuyển đổi ngôn ngữ Tiếng Việt / English"
+      >
+        <span id="langFlag">🇻🇳</span>
+        <span id="langLabel" class="text-amber-400">VN</span>
+        <span class="text-white/30 font-normal">|</span>
+        <span id="langAlt" class="text-white/60 font-medium">EN</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= HERO 3-COLUMN EDITORIAL CANVAS ================= -->
+  <main class="w-full max-w-7xl mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 items-center gap-6 lg:gap-8 my-auto relative z-20">
+
+    <!-- 1. LEFT COLUMN: BOTANICAL SPECIES IDENTIFICATION -->
+    <div class="lg:col-span-4 flex flex-col justify-center order-2 lg:order-1 text-left z-20">
+      
+      <!-- Scientific Tag -->
+      <div id="speciesTag" class="text-slide-up flex items-center gap-2 text-xs font-semibold tracking-widest text-[#8E8E93] uppercase mb-2">
+        <span class="w-2 h-2 bg-[#8E8E93] rounded-[1px] inline-block"></span>
+        <span id="tagFamilyText">HỌ CÚC • ASTERACEAE</span>
+      </div>
+
+      <!-- Main High-Contrast Serif Title -->
+      <h1 
+        id="speciesTitle" 
+        class="text-slide-up font-serif-luxury text-4xl sm:text-5xl lg:text-7xl font-normal text-white tracking-tight leading-[0.98] mb-3"
+      >
+        Hoa Hướng Dương
+      </h1>
+
+      <!-- Botanical Description -->
+      <p 
+        id="speciesDesc" 
+        class="text-slide-up text-xs sm:text-sm text-[#A0A0A8] leading-relaxed max-w-sm mb-4 font-light"
+      >
+        Chi hoa gồm khoảng 70 loài thực vật thân thảo hàng năm và lâu năm thuộc họ Cúc (Asteraceae). Nổi tiếng với những cánh hoa vàng óng ả rực rỡ và đặc tính luôn hướng về ánh mặt trời.
+      </p>
+
+      <!-- Botanical Key Metadata Columns -->
+      <div class="grid grid-cols-2 gap-6 max-w-xs pt-3 border-t border-white/10 text-slide-up" id="speciesMeta">
+        <div>
+          <span id="metaOriginKey" class="block text-[10px] uppercase font-bold tracking-widest text-[#6C6C74] mb-0.5">Nguồn gốc</span>
+          <span id="metaOrigin" class="text-xs sm:text-sm font-medium text-white leading-tight">Bắc Mỹ</span>
+        </div>
+        <div>
+          <span id="metaFamilyKey" class="block text-[10px] uppercase font-bold tracking-widest text-[#6C6C74] mb-0.5">Họ thực vật</span>
+          <span id="metaFamily" class="text-xs sm:text-sm font-medium text-white leading-tight">Họ Cúc (Asteraceae)</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2. CENTER COLUMN: HERO HEROIC FLOWER STAGE -->
+    <div class="lg:col-span-4 flex flex-col items-center justify-center relative order-1 lg:order-2 h-[260px] sm:h-[340px] lg:h-[460px]">
+      
+      <!-- Mystery Cat Tap Hint (Floating at top of stage, never obscured by mask or dots) -->
+      <div id="catTapHint" class="hidden absolute top-0 sm:top-2 px-4 py-1.5 rounded-full bg-pink-500/25 border border-pink-400/50 text-pink-200 text-xs font-semibold tracking-wide backdrop-blur-md shadow-xl animate-bounce z-40 pointer-events-none whitespace-nowrap">
+        ✦ Chạm vào chú mèo xem chuyện gì xảy ra ✦
+      </div>
+
+      <!-- Flower Image Display Wrapper -->
+      <div 
+        id="flowerWrapper" 
+        class="hero-float-anim flower-fade-mask relative w-full h-full flex items-center justify-center cursor-pointer group"
+        onclick="handleFlowerClick()"
+        title="Bấm để tương tác hoặc vuốt để đổi hoa"
+      >
+        <img 
+          id="heroFlowerImg" 
+          src="images/flowers/sunflower.png" 
+          alt="Botanical Flower" 
+          class="max-w-[240px] sm:max-w-[320px] lg:max-w-[390px] max-h-[92%] object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-105"
+        >
+      </div>
+
+      <!-- CAROUSEL DOTS INDICATOR (Directly beneath flower on both PC and Mobile) -->
+      <div class="flex items-center justify-center gap-2 mt-2 z-30">
+        <button onclick="goToSlide(0)" class="carousel-dot p-1.5 group" title="Hoa Hướng Dương / Sunflower">
+          <span class="carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-6 bg-white"></span>
+        </button>
+        <button onclick="goToSlide(1)" class="carousel-dot p-1.5 group" title="Hoa Hồng / Rose">
+          <span class="carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-1.5 bg-white/30 group-hover:bg-white/60"></span>
+        </button>
+        <button onclick="goToSlide(2)" class="carousel-dot p-1.5 group" title="Hoa Ly / Lily">
+          <span class="carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-1.5 bg-white/30 group-hover:bg-white/60"></span>
+        </button>
+        <button onclick="goToSlide(3)" class="carousel-dot p-1.5 group" title="Hoa Anh Đào / Cherry Blossom">
+          <span class="carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-1.5 bg-white/30 group-hover:bg-white/60"></span>
+        </button>
+        <button onclick="goToSlide(4)" class="carousel-dot p-1.5 group" title="Con mèo này đâu ra vậy ?">
+          <span class="carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-1.5 bg-pink-400/50 group-hover:bg-pink-400"></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- 3. RIGHT COLUMN: CONTEXTUAL SIDEBAR & PREVIEW GALLERY -->
+    <div class="lg:col-span-4 flex flex-col justify-center items-start lg:items-end order-3 z-20">
+      
+      <!-- The Editorial Glass Card -->
+      <div class="glass-card rounded-3xl p-5 sm:p-6 w-full max-w-sm text-left relative overflow-hidden">
+        
+        <!-- Two Side-by-side Thumbnail Preview Cards -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <!-- Current Flower Macro Thumbnail -->
+          <div class="relative aspect-square rounded-2xl overflow-hidden border border-white/10 bg-[#16161A] group">
+            <img 
+              id="thumbCurrent" 
+              src="images/flowers/sunflower_macro.jpg" 
+              alt="Current species macro" 
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            >
+            <span id="thumbCurrentBadge" class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[9px] font-bold text-white uppercase tracking-wider">
+              Hiện tại
+            </span>
+          </div>
+
+          <!-- Next Flower Preview Thumbnail (Clickable!) -->
+          <div 
+            onclick="nextSlide()" 
+            class="relative aspect-square rounded-2xl overflow-hidden border border-white/15 bg-[#16161A] cursor-pointer group hover:border-white/40 transition-colors"
+            title="Bấm để xem loài hoa tiếp theo"
+          >
+            <img 
+              id="thumbNext" 
+              src="images/flowers/rose_macro.jpg" 
+              alt="Next species preview" 
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+            >
+            <span id="thumbNextBadge" class="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[9px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
+              <span>Tiếp theo</span>
+              <span>→</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Article / Collection Heading -->
+        <h3 id="cardHeading" class="font-serif-luxury text-base sm:text-lg font-bold text-white mb-2 leading-snug">
+          Chiêm ngưỡng vẻ đẹp kiêu hãnh họ Cúc
+        </h3>
+
+        <!-- Curated Observation Text -->
+        <p id="cardBody" class="text-xs text-[#A0A0A8] leading-relaxed mb-3 font-light">
+          Asteraceae là một trong những họ thực vật có hoa phong phú và đa dạng nhất thế giới, bao gồm hơn 32.000 loài mang cấu trúc hình học mặt trời tự nhiên hoàn mỹ.
+        </p>
+
+        <!-- Author / Curator Citation & CTA -->
+        <div class="flex items-center justify-between pt-3 border-t border-white/10">
+          <span id="cardAuthor" class="text-xs text-[#8E8E93] italic font-garamond text-sm">
+            — Christine R.
+          </span>
+          <button 
+            id="btnViewDetail"
+            onclick="openDetailModal()" 
+            class="px-4 py-1.5 rounded-full bg-[#202024] hover:bg-[#2C2C32] text-white text-xs font-semibold transition-all border border-white/10 active:scale-95"
+          >
+            Xem chi tiết
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ================= BOTTOM FOOTER BAR ================= -->
+  <footer class="w-full max-w-7xl mx-auto flex items-center justify-between z-30 pt-1 pb-1 text-xs text-[#6C6C74] relative shrink-0">
+    
+    <!-- Left: Slide Number Counter & Dots -->
+    <div class="flex items-center gap-3">
+      <span id="slideCounter" class="text-[11px] font-mono text-[#8E8E93]">
+        01 / 04
+      </span>
+      <span class="text-white/20">|</span>
+      <span id="footerBrandNote" class="text-[11px] text-[#6C6C74] hidden sm:inline">Flora Botanical Collection</span>
+    </div>
+
+    <!-- Center Navigation Chevrons -->
+    <div class="flex items-center gap-2">
+      <button 
+        onclick="prevSlide()" 
+        class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 active:scale-90 transition-all"
+        title="Loài hoa trước"
+      >
+        ‹
+      </button>
+      <button 
+        onclick="nextSlide()" 
+        class="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white hover:border-white/40 active:scale-90 transition-all"
+        title="Loài hoa tiếp theo"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- Right: Social Links -->
+    <div class="flex items-center gap-4 text-xs">
+      <span id="footerShareLabel" class="text-[#6C6C74] font-medium hidden sm:inline">Chia sẻ:</span>
+      <a href="#" class="hover:text-white transition-colors font-semibold">Fb</a>
+      <a href="#" class="hover:text-white transition-colors font-semibold">Tw</a>
+      <a href="#" class="hover:text-white transition-colors font-semibold">Ig</a>
+    </div>
+
+  </footer>
+
+
+  <!-- ================= GRAND BOUQUET SEPARATE FULLSCREEN VIEW (FADE IN/OUT) ================= -->
+  <div 
+    id="bouquetScreenOverlay" 
+    class="fixed inset-0 z-50 bouquet-paper-bg opacity-0 pointer-events-none transition-opacity duration-700 ease-in-out flex flex-col justify-between items-center overflow-hidden"
+  >
+    <!-- Background: Fullscreen Flat Falling Flower Rain Canvas -->
+    <canvas id="fallingFlowersCanvas" class="absolute inset-0 pointer-events-none z-10 w-full h-full"></canvas>
+
+    <!-- Top Bar: Back Button, Flower Rain Toggle, Sound Toggle -->
+    <header class="w-full max-w-4xl mx-auto pt-4 px-4 z-40 flex items-center justify-between">
+      <!-- Back to Flora Web Button -->
+      <button 
+        onclick="closeBouquetView()" 
+        class="bg-white/85 backdrop-blur-md px-4 py-2 rounded-full border border-[#E8DFD5] shadow-xs text-xs font-semibold text-[#2C221E] hover:bg-white active:scale-95 transition-all flex items-center gap-2 group"
+      >
+        <span class="group-hover:-translate-x-1 transition-transform">←</span>
+        <span id="btnBackToFlora">Quay lại vườn hoa</span>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <!-- Toggle Flower Rain Button -->
+        <button 
+          id="flowersToggleBtn" 
+          onclick="toggleFlowerRain()" 
+          class="bg-white/85 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#E8DFD5] shadow-xs text-xs font-semibold text-[#635753] hover:text-[#2C221E] active:scale-95 transition-all flex items-center gap-1.5"
+          title="Bật/Tắt mưa hoa"
+        >
+          <span>🌸</span>
+          <span id="flowersToggleLabel" class="hidden sm:inline">Mưa hoa</span>
+        </button>
+
+        <!-- Toggle Sound Button -->
+        <button 
+          id="soundBtn" 
+          onclick="toggleSound()" 
+          class="w-8 h-8 rounded-full bg-white/85 backdrop-blur-md border border-[#E8DFD5] shadow-xs flex items-center justify-center text-[#635753] hover:text-[#2C221E] active:scale-95 transition-all"
+          title="Bật/Tắt âm thanh"
+        >
+          <svg id="soundMutedIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+          </svg>
+          <svg id="soundActiveIcon" class="w-4 h-4 text-[#B71C1C] hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Stage: Floating Grand Bouquet & Interactive Flowers -->
+    <main class="relative z-20 flex-1 w-full max-w-xl mx-auto px-4 flex flex-col items-center justify-center my-auto">
+      
+      <!-- Title & Subtitle -->
+      <div class="mb-1 text-center space-y-1">
+        <h1 id="bouquetScreenTitle" class="font-serif-luxury text-2xl sm:text-3xl font-extrabold text-[#2C221E] tracking-tight">
+          Đóa Hoa Dành Cho Bạn
+        </h1>
+        <p id="bouquetScreenSub" class="text-xs sm:text-sm italic text-[#8C3A00] font-medium">
+          Rê chuột hoặc chạm vào từng bông hoa để tương tác
+        </p>
+      </div>
+
+      <!-- The 10-bloom Bouquet with Bobbing Animation -->
+      <div class="flower-float-anim relative w-full max-w-[390px] sm:max-w-[430px] aspect-[1/1.12] my-1 flex items-center justify-center">
+        
+        <!-- Ground Shadow -->
+        <div class="absolute bottom-5 w-3/4 h-8 bg-black/10 rounded-full blur-md"></div>
+
+        <!-- Wrapping Paper Layer (Z-1) -->
+        <img 
+          src="assets/bouquet/wrap-atelier-ivory.png" 
+          alt="Bouquet Wrap" 
+          class="absolute w-[84%] left-[8%] top-[25%] z-[1] bouquet-drop-shadow pointer-events-none select-none"
+        >
+
+        <!-- Eucalyptus Foliage (Z-2) -->
+        <img src="assets/bouquet/leaf-sprig-atelier-eucalyptus.png" alt="Leaf" class="absolute left-[10%] top-[22%] w-[23%] z-[2] -rotate-12 pointer-events-none select-none">
+        <img src="assets/bouquet/leaf-sprig-atelier-eucalyptus.png" alt="Leaf" class="absolute left-[68%] top-[25%] w-[21%] z-[2] rotate-15 pointer-events-none select-none">
+        <img src="assets/bouquet/leaf-sprig-atelier-eucalyptus.png" alt="Leaf" class="absolute left-[16%] top-[43%] w-[19%] z-[2] -rotate-25 pointer-events-none select-none">
+        <img src="assets/bouquet/leaf-sprig-atelier-eucalyptus.png" alt="Leaf" class="absolute left-[65%] top-[46%] w-[19%] z-[2] rotate-20 pointer-events-none select-none">
+
+        <!-- 10 Interactive Flower Blooms with Individual Hover Bounce -->
+        <img src="assets/bouquet/flower-head-atelier-tulip.png" alt="Tulip" class="absolute left-[18%] top-[27%] w-[18%] z-[5] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Tulip">
+        <img src="assets/bouquet/flower-head-atelier-lisianthus.png" alt="Lisianthus" class="absolute left-[31%] top-[22%] w-[19%] z-[6] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Lisianthus">
+        <img src="assets/bouquet/flower-head-atelier-peony.png" alt="Peony" class="absolute left-[42%] top-[30%] w-[23%] z-[8] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Peony">
+        <img src="assets/bouquet/flower-head-atelier-anemone.png" alt="Anemone" class="absolute left-[61%] top-[29%] w-[19%] z-[6] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Anemone">
+        <img src="assets/bouquet/flower-head-atelier-rose.png" alt="Rose" class="absolute left-[16%] top-[44%] w-[17%] z-[5] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Rose">
+        <img src="assets/bouquet/flower-head-atelier-ranunculus.png" alt="Ranunculus" class="absolute left-[31%] top-[42%] w-[18%] z-[6] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Ranunculus">
+        <img src="assets/bouquet/flower-head-atelier-lisianthus.png" alt="Lisianthus" class="absolute left-[59%] top-[45%] w-[18%] z-[6] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Lisianthus">
+        <img src="assets/bouquet/flower-head-atelier-anemone.png" alt="Anemone" class="absolute left-[26%] top-[56%] w-[17%] z-[5] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Anemone">
+        <img src="assets/bouquet/flower-head-atelier-rose.png" alt="Rose" class="absolute left-[42%] top-[53%] w-[18%] z-[6] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Rose">
+        <img src="assets/bouquet/flower-head-atelier-ranunculus.png" alt="Ranunculus" class="absolute left-[59%] top-[58%] w-[17%] z-[5] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Ranunculus">
+
+        <!-- Champagne Satin Bow (Z-7) -->
+        <img src="assets/bouquet/bow-atelier-champagne.png" alt="Champagne Bow" class="absolute left-[34%] top-[72%] w-[33%] z-[7] flower-shadow cursor-pointer select-none" onclick="flowerBurstPop(this)" title="Bow">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-center gap-3 w-full max-w-xs mt-2 mb-4 z-30">
+        <button 
+          onclick="fireMegaCelebration()" 
+          class="flex-1 py-2.5 rounded-full bg-[#B71C1C] hover:bg-[#8B1414] text-white text-xs font-semibold active:scale-95 transition-all shadow-md flex items-center justify-center gap-1.5"
+        >
+          <span>Thêm hoa</span>
+          <span>🌸</span>
+        </button>
+        <button 
+          onclick="closeBouquetView()" 
+          class="flex-1 py-2.5 rounded-full bg-white/90 border border-[#DDD3C5] text-[#3E2723] text-xs font-semibold hover:bg-[#FAF6F0] active:scale-95 transition-all shadow-xs"
+        >
+          Quay lại ↺
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ================= DETAIL MODAL POPUP ================= -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 sm:p-8 text-left relative animate-in fade-in zoom-in-95 duration-300">
+      
+      <!-- Close button -->
+      <button onclick="closeDetailModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-xs transition-colors">
+        ✕
+      </button>
+
+      <!-- Modal Content -->
+      <span id="modalCategory" class="text-[11px] font-bold uppercase tracking-widest text-[#E68B23]">Chuyên Khảo Thực Vật Học</span>
+      <h2 id="modalTitle" class="font-serif-luxury text-3xl sm:text-4xl font-normal text-white my-2">Hoa Hướng Dương</h2>
+      <p id="modalScientific" class="text-xs text-[#8E8E93] italic font-garamond text-base mb-4">Helianthus annuus • Asteraceae</p>
+
+      <div class="space-y-3 text-xs sm:text-sm text-[#A0A0A8] leading-relaxed mb-6">
+        <p id="modalDetail1">
+          Hoa hướng dương nổi bật với hiện tượng hướng nhật (phototropism), búp hoa non luôn chuyển động bám theo hành trình mặt trời từ đông sang tây mỗi ngày.
+        </p>
+        <p id="modalDetail2">
+          Được các tộc người bản địa gieo trồng từ hàng ngàn năm trước, hướng dương ngày nay là biểu tượng bất diệt của lòng kiên định, niềm tin và sự ấm áp.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center">
+        <div>
+          <span id="modalBloomsKey" class="block text-[10px] text-[#6C6C74] uppercase font-bold">Mùa hoa</span>
+          <span id="modalBlooms" class="text-xs font-semibold text-white">Mùa hạ — Thu</span>
+        </div>
+        <div>
+          <span id="modalHeightKey" class="block text-[10px] text-[#6C6C74] uppercase font-bold">Chiều cao</span>
+          <span id="modalHeight" class="text-xs font-semibold text-white">1.5m — 3.5m</span>
+        </div>
+        <div>
+          <span id="modalSunKey" class="block text-[10px] text-[#6C6C74] uppercase font-bold">Ánh sáng</span>
+          <span id="modalSun" class="text-xs font-semibold text-white">Nắng toàn phần</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT STATE ENGINE ================= -->
+  <script>
+    // BILINGUAL STATIC TEXTS
+    const UI_TRANSLATIONS = {
+      vi: {
+        navSpecies: 'Loài hoa',
+        navAbout: 'Giới thiệu',
+        navBlog: 'Bài viết',
+        thumbCurrent: 'Hiện tại',
+        thumbNext: 'Tiếp theo',
+        viewDetail: 'Xem chi tiết',
+        shareOn: 'Chia sẻ:',
+        brandNote: 'Bộ sưu tập Thực vật học Flora',
+        langFlag: '🇻🇳',
+        langLabel: 'VN',
+        langAlt: 'EN',
+        langTooltip: 'Chuyển sang Tiếng Anh (Switch to English)'
+      },
+      en: {
+        navSpecies: 'Species',
+        navAbout: 'About',
+        navBlog: 'Blog',
+        thumbCurrent: 'Current',
+        thumbNext: 'Next',
+        viewDetail: 'View Detail',
+        shareOn: 'Share on:',
+        brandNote: 'Flora Botanical Collection',
+        langFlag: '🇬🇧',
+        langLabel: 'EN',
+        langAlt: 'VN',
+        langTooltip: 'Chuyển sang Tiếng Việt (Switch to Vietnamese)'
+      }
+    };
+
+    // THE 4 AUTHENTIC FLOWERS WITH FULL BILINGUAL CONTENT
+    const FLORA_SLIDES = [
+      {
+        id: 'sunflower',
+        accentColor: '#E68B23',
+        glowColor: 'rgba(230, 139, 35, 0.22)',
+        image: 'images/flowers/sunflower.png',
+        macro: 'images/flowers/sunflower_macro.jpg',
+        vi: {
+          title: 'Hoa Hướng Dương',
+          tag: 'HỌ CÚC • ASTERACEAE',
+          desc: 'Chi hoa gồm khoảng 70 loài thực vật thân thảo hàng năm và lâu năm thuộc họ Cúc (Asteraceae). Nổi tiếng với những cánh hoa vàng óng ả rực rỡ và đặc tính luôn hướng về ánh mặt trời.',
+          originKey: 'Nguồn gốc',
+          origin: 'Bắc Mỹ',
+          familyKey: 'Họ thực vật',
+          family: 'Họ Cúc (Asteraceae)',
+          cardHeading: 'Chiêm ngưỡng vẻ đẹp kiêu hãnh họ Cúc',
+          cardBody: 'Asteraceae là một trong những họ thực vật có hoa phong phú và đa dạng nhất thế giới, bao gồm hơn 32.000 loài mang cấu trúc hình học mặt trời tự nhiên hoàn mỹ.',
+          author: '— Christine R.',
+          modalCategory: 'Chuyên Khảo Thực Vật Học',
+          modalScientific: 'Helianthus annuus • Họ Cúc (Asteraceae)',
+          modalDetail1: 'Hoa hướng dương nổi bật với hiện tượng hướng nhật (phototropism), búp hoa non luôn chuyển động bám theo hành trình mặt trời từ đông sang tây mỗi ngày.',
+          modalDetail2: 'Được các tộc người bản địa gieo trồng từ hàng ngàn năm trước, hướng dương ngày nay là biểu tượng bất diệt của lòng kiên định, niềm tin và sự ấm áp.',
+          modalBloomsKey: 'Mùa hoa',
+          modalBlooms: 'Mùa hạ — Thu',
+          modalHeightKey: 'Chiều cao',
+          modalHeight: '1.5m — 3.5m',
+          modalSunKey: 'Ánh sáng',
+          modalSun: 'Nắng toàn phần'
+        },
+        en: {
+          title: 'Sunflower',
+          tag: 'ASTERACEAE',
+          desc: 'Helianthus is a genus comprising about 70 species of annual and perennial flowering plants in the daisy family Asteraceae. Celebrated for its radiant golden petals and sun-following bloom.',
+          originKey: 'Origin',
+          origin: 'North America',
+          familyKey: 'Family',
+          family: 'Asteraceae',
+          cardHeading: 'Observe its beauty of Daisy family',
+          cardBody: 'Asteraceae is a very large and widespread family of flowering plants. The family includes over 32,000 currently accepted species in over 1,900 genera.',
+          author: '— Christine R.',
+          modalCategory: 'Botanical Monograph',
+          modalScientific: 'Helianthus annuus • Asteraceae',
+          modalDetail1: 'Helianthus is celebrated for its phototropism, where young flower buds track the path of the sun across the sky from east to west.',
+          modalDetail2: 'Grown historically by Indigenous North American peoples for sustenance and ceremonial art, it has become a timeless international emblem of devotion and joy.',
+          modalBloomsKey: 'Blooms',
+          modalBlooms: 'Summer — Fall',
+          modalHeightKey: 'Height',
+          modalHeight: '1.5m — 3.5m',
+          modalSunKey: 'Sunlight',
+          modalSun: 'Full Sun'
+        }
+      },
+      {
+        id: 'rose',
+        accentColor: '#D15B8F',
+        glowColor: 'rgba(209, 91, 143, 0.24)',
+        image: 'images/flowers/rose.png',
+        macro: 'images/flowers/rose_macro.jpg',
+        vi: {
+          title: 'Hoa Hồng',
+          tag: 'HỌ HOA HỒNG • ROSACEAE',
+          desc: 'Loài cây thân gỗ lâu năm thuộc chi Rosa, họ Hoa hồng (Rosaceae). Được tôn vinh qua nhiều nền văn hóa như biểu tượng bất biến của sự đài các, tình cảm chân thành và hương thơm quyến rũ.',
+          originKey: 'Nguồn gốc',
+          origin: 'Châu Á & Địa Trung Hải',
+          familyKey: 'Họ thực vật',
+          family: 'Họ Hoa Hồng (Rosaceae)',
+          cardHeading: 'Chiêm ngưỡng vẻ đẹp đài các họ Hoa Hồng',
+          cardBody: 'Họ Rosaceae chứa đựng những loài hoa cảnh quý phái nhất hành tinh, say đắm lòng người bởi các lớp cánh xếp tầng xoắn ốc theo tỷ lệ vàng Fibonacci.',
+          author: '— Christine R.',
+          modalCategory: 'Chuyên Khảo Thực Vật Học',
+          modalScientific: 'Rosa gallica • Họ Hoa Hồng (Rosaceae)',
+          modalDetail1: 'Các cánh hoa hồng xếp lớp theo chuỗi Fibonacci hoàn hảo, tạo nên kỳ quan cấu trúc hình học mềm mại nhất trong thế giới thực vật học.',
+          modalDetail2: 'Được con người thuần dưỡng hơn 5.000 năm, hoa hồng mang chiều sâu văn hóa đồ sộ trong thi ca, mỹ thuật và nghệ thuật điều chế nước hoa tinh xảo.',
+          modalBloomsKey: 'Mùa hoa',
+          modalBlooms: 'Quanh năm',
+          modalHeightKey: 'Chiều cao',
+          modalHeight: '0.6m — 2.0m',
+          modalSunKey: 'Ánh sáng',
+          modalSun: 'Nắng 6h+/ngày'
+        },
+        en: {
+          title: 'Rose',
+          tag: 'ROSACEAE',
+          desc: 'A rose is a woody perennial flowering plant of the genus Rosa, in the family Rosaceae. Renowned across cultures as the timeless emblem of elegance, poetic admiration, and delicate fragrance.',
+          originKey: 'Origin',
+          origin: 'Asia & Mediterranean',
+          familyKey: 'Family',
+          family: 'Rosaceae',
+          cardHeading: 'Observe its beauty of Rosaceae family',
+          cardBody: 'Rosaceae encompasses an extraordinary range of ornamental and edible plants, cherished worldwide for layered spiraling petals and sweet aroma.',
+          author: '— Christine R.',
+          modalCategory: 'Botanical Monograph',
+          modalScientific: 'Rosa gallica • Rosaceae',
+          modalDetail1: 'The delicate spiraling petals of the rose follow the golden ratio (Fibonacci sequence), displaying nature’s masterwork in botanical geometry.',
+          modalDetail2: 'Cultivated for over five millennia, roses hold profound cultural resonance in literature, perfume craft, and romantic symbolism worldwide.',
+          modalBloomsKey: 'Blooms',
+          modalBlooms: 'Spring — Autumn',
+          modalHeightKey: 'Height',
+          modalHeight: '0.6m — 2.0m',
+          modalSunKey: 'Sunlight',
+          modalSun: 'Full / Partial'
+        }
+      },
+      {
+        id: 'lily',
+        accentColor: '#72B5A5',
+        glowColor: 'rgba(114, 181, 165, 0.22)',
+        image: 'images/flowers/lily.png',
+        macro: 'images/flowers/lily_macro.jpg',
+        vi: {
+          title: 'Hoa Ly Trắng',
+          tag: 'HỌ BÁCH HỢP • LILIACEAE',
+          desc: 'Chi hoa thân thảo mọc từ củ với những đóa hoa lớn kiêu sa lộng lẫy. Biểu trưng cho tâm hồn thanh cao, đức hạnh, lòng tôn kính và nét đối xứng hoàn hảo trong tự nhiên.',
+          originKey: 'Nguồn gốc',
+          origin: 'Bán cầu Bắc',
+          familyKey: 'Họ thực vật',
+          family: 'Họ Bách Hợp (Liliaceae)',
+          cardHeading: 'Vẻ đẹp thanh tao của họ Bách Hợp',
+          cardBody: 'Hoa ly được tôn sùng bởi những cánh hoa hình loa kèn kiêu hãnh, nhị hoa dài uốn lượn duyên dáng tỏa hương ngát thơm quý phái.',
+          author: '— Christine R.',
+          modalCategory: 'Chuyên Khảo Thực Vật Học',
+          modalScientific: 'Lilium candidum • Họ Bách Hợp (Liliaceae)',
+          modalDetail1: 'Hoa ly sở hữu tràng hoa hình chuông rộng đón gió, đài nhụy mang phấn hoa óng ánh thu hút các loài thụ phấn tinh anh trong tự nhiên.',
+          modalDetail2: 'Trong mỹ thuật Phục Hưng và văn hóa phương Đông, hoa ly trắng luôn đại diện cho sự tái sinh, tấm lòng trong sáng và khí chất tao nhã.',
+          modalBloomsKey: 'Mùa hoa',
+          modalBlooms: 'Đầu hè',
+          modalHeightKey: 'Chiều cao',
+          modalHeight: '0.8m — 1.8m',
+          modalSunKey: 'Ánh sáng',
+          modalSun: 'Nắng nhẹ'
+        },
+        en: {
+          title: 'Lily',
+          tag: 'LILIACEAE',
+          desc: 'Lilium is a genus of herbaceous flowering plants growing from bulbs, all with large prominent flowers. Revering purity, noble spirit, and graceful symmetry in classical botanical history.',
+          originKey: 'Origin',
+          origin: 'Northern Hemisphere',
+          familyKey: 'Family',
+          family: 'Liliaceae',
+          cardHeading: 'Observe its beauty of Liliaceae family',
+          cardBody: 'True lilies are celebrated for their trumpet-shaped corollas, long arching stamens, and pristine ivory petals carrying historic botanical distinction.',
+          author: '— Christine R.',
+          modalCategory: 'Botanical Monograph',
+          modalScientific: 'Lilium candidum • Liliaceae',
+          modalDetail1: 'Lilies feature prominent nectar-bearing petals that open in wide architectural harmony, inviting pollinators with deep honeyed scent.',
+          modalDetail2: 'In classical lore and renaissance art, the white lily symbolized peace, rebirth, and elevated grace across European and Asian traditions.',
+          modalBloomsKey: 'Blooms',
+          modalBlooms: 'Early Summer',
+          modalHeightKey: 'Height',
+          modalHeight: '0.8m — 1.8m',
+          modalSunKey: 'Sunlight',
+          modalSun: 'Morning Sun'
+        }
+      },
+      {
+        id: 'blossoms',
+        accentColor: '#E87A9A',
+        glowColor: 'rgba(232, 122, 154, 0.24)',
+        image: 'images/flowers/blossoms.png',
+        macro: 'images/flowers/blossoms_macro.jpg',
+        vi: {
+          title: 'Hoa Anh Đào',
+          tag: 'CHI MƠ / ANH ĐÀO • PRUNUS',
+          desc: 'Prunus serrulata, tức hoa anh đào (Sakura), nổi tiếng với những vòm hoa nở rộ báo hiệu mùa xuân. Biểu tượng thanh nhã của tuổi thanh xuân, tri thức tươi mới và khát vọng vươn xa.',
+          originKey: 'Nguồn gốc',
+          origin: 'Đông Á',
+          familyKey: 'Họ thực vật',
+          family: 'Họ Hoa Hồng (Rosaceae)',
+          cardHeading: 'Chiêm ngưỡng sắc hồng hoa Anh Đào',
+          cardBody: 'Từng chùm hoa anh đào mong manh hé nở đồng loạt khi gió xuân về, gợi nhắc vẻ đẹp trong ngần của thiên nhiên và những khởi đầu mới ngập tràn hy vọng.',
+          author: '— Christine R.',
+          modalCategory: 'Chuyên Khảo Thực Vật Học',
+          modalScientific: 'Prunus serrulata • Họ Hoa Hồng (Rosaceae)',
+          modalDetail1: 'Hoa anh đào nở thành từng cụm từ 3-5 đóa hoa cánh mỏng, phô bày sắc hồng phớt tinh khôi cùng nhụy hoa thanh mảnh dưới nắng xuân.',
+          modalDetail2: 'Trở thành nguồn cảm hứng bất tận qua hàng ngàn bài thơ Haiku và tranh thủy mặc, hoa anh đào tượng trưng cho nét đẹp thanh khiết của đời người.',
+          modalBloomsKey: 'Mùa hoa',
+          modalBlooms: 'Mùa xuân',
+          modalHeightKey: 'Chiều cao',
+          modalHeight: '4m — 12m',
+          modalSunKey: 'Ánh sáng',
+          modalSun: 'Nắng ấm'
+        },
+        en: {
+          title: 'Blossom',
+          tag: 'PRUNUS / ROSACEAE',
+          desc: 'Prunus serrulata, known as cherry blossom, is celebrated for its breathtaking spring blooms. A delicate symbol of fleeting beauty, fresh knowledge, and gentle renewal.',
+          originKey: 'Origin',
+          origin: 'East Asia',
+          familyKey: 'Family',
+          family: 'Rosaceae',
+          cardHeading: 'Observe its beauty of Sakura blossoms',
+          cardBody: 'Cherry blossoms emerge in soft clusters of pastel petals, capturing centuries of philosophical appreciation for the ephemeral beauty of life.',
+          author: '— Christine R.',
+          modalCategory: 'Botanical Monograph',
+          modalScientific: 'Prunus serrulata • Rosaceae',
+          modalDetail1: 'Each delicate blossom cluster opens simultaneously in early spring, creating ephemeral clouds of soft pink and ivory across garden canopies.',
+          modalDetail2: 'Celebrated for millennia in poetry, woodblock prints, and springtime festivals, it represents new beginnings, clarity, and renewal.',
+          modalBloomsKey: 'Blooms',
+          modalBlooms: 'Spring',
+          modalHeightKey: 'Height',
+          modalHeight: '4m — 12m',
+          modalSunKey: 'Sunlight',
+          modalSun: 'Full Sun'
+        }
+      },
+      {
+        id: 'cat',
+        isCat: true,
+        accentColor: '#FF6F91',
+        glowColor: 'rgba(255, 111, 145, 0.28)',
+        image: 'images/user_cat_transparent.png',
+        macro: 'images/user_cat_macro.jpg',
+        vi: {
+          title: 'Con mèo này đâu ra vậy ?',
+          tag: 'SINH VẬT BÍ ẨN • UNIDENTIFIED',
+          desc: 'Một vị khách không mời mà đến bỗng nhiên xuất hiện giữa vườn thực vật. Không có bất kỳ tài liệu hay nghiên cứu nào ghi chép về nguồn gốc của sinh vật này. Nó ôm chặt bó hoa và nhìn bạn với ánh mắt vô cùng bí ẩn...',
+          originKey: 'Nguồn gốc',
+          origin: 'Hoàn toàn bí ẩn',
+          familyKey: 'Phân loài',
+          family: 'Bí ẩn • ???',
+          cardHeading: 'Một sự xuất hiện kỳ lạ...',
+          cardBody: 'Mọi thông tin về nguồn gốc hay mục đích của chú mèo này đều là ẩn số. Hãy thử chạm vào chú mèo xem điều gì sẽ xảy ra...',
+          author: '— Không rõ danh tính ✦',
+          modalCategory: 'Sinh Vật Bí Ẩn',
+          modalScientific: 'Felis mysticus • Unknown Origin',
+          modalDetail1: 'Không có bất kỳ dữ liệu nào trong kho lưu trữ thực vật học ghi chép về loài mèo này. Nó xuất hiện bất thình lình cùng một bó hoa rực rỡ.',
+          modalDetail2: 'Nhiều người tin rằng chú mèo này là một sứ giả bí ẩn mang theo món quà đặc biệt đến từ một chiều không gian khác.',
+          modalBloomsKey: 'Nguồn gốc',
+          modalBlooms: 'Không xác định',
+          modalHeightKey: 'Tung tích',
+          modalHeight: 'Bí ẩn',
+          modalSunKey: 'Hành vi',
+          modalSun: 'Ôm hoa & Nhìn bạn'
+        },
+        en: {
+          title: 'Where did this cat come from ?',
+          tag: 'UNIDENTIFIED CREATURE',
+          desc: 'An uninvited little guest suddenly appears in the botanical garden. No botanical records mention this creature. It holds a flower bouquet tightly and stares right at you with a mysterious gaze...',
+          originKey: 'Origin',
+          origin: 'Completely Unknown',
+          familyKey: 'Species',
+          family: 'Mystery • ???',
+          cardHeading: 'A mysterious visitor...',
+          cardBody: 'All archives regarding this creature\'s origin and purpose remain unknown. Try touching the cat to see what happens...',
+          author: '— Unknown Entity ✦',
+          modalCategory: 'Unidentified Creature',
+          modalScientific: 'Felis mysticus • Unknown Origin',
+          modalDetail1: 'No data exists in any botanical archives regarding this strange feline. It simply materialized with a glowing bouquet.',
+          modalDetail2: 'Legends say it is an otherworldly messenger carrying a hidden secret across realms.',
+          modalBloomsKey: 'Origin',
+          modalBlooms: 'Unidentified',
+          modalHeightKey: 'Location',
+          modalHeight: 'Mystery',
+          modalSunKey: 'Behavior',
+          modalSun: 'Staring & Holding Flowers'
+        }
+      }
+    ];
+
+    let currentLang = localStorage.getItem('flora_lang') || 'vi'; // default to Vietnamese
+    let currentIndex = 0;
+    let isTransitioning = false;
+
+    // LANGUAGE TOGGLE HANDLER
+    function toggleLanguage() {
+      currentLang = currentLang === 'vi' ? 'en' : 'vi';
+      localStorage.setItem('flora_lang', currentLang);
+      document.documentElement.lang = currentLang;
+
+      // Update global UI texts
+      updateGlobalUITexts();
+
+      // Refresh current slide texts with animation
+      updateSlide(currentIndex, 'none');
+    }
+
+    function updateGlobalUITexts() {
+      const ui = UI_TRANSLATIONS[currentLang];
+
+      document.getElementById('navSpecies').childNodes[0].nodeValue = ui.navSpecies + ' ';
+      document.getElementById('navAbout').innerText = ui.navAbout;
+      document.getElementById('navBlog').innerText = ui.navBlog;
+
+      document.getElementById('thumbCurrentBadge').innerText = ui.thumbCurrent;
+      document.getElementById('thumbNextBadge').innerHTML = `<span>${ui.thumbNext}</span><span>→</span>`;
+      document.getElementById('btnViewDetail').innerText = ui.viewDetail;
+      document.getElementById('footerShareLabel').innerText = ui.shareOn;
+      document.getElementById('footerBrandNote').innerText = ui.brandNote;
+
+      // Switcher Button visuals
+      document.getElementById('langFlag').innerText = ui.langFlag;
+      if (currentLang === 'vi') {
+        document.getElementById('langLabel').innerText = 'VN';
+        document.getElementById('langLabel').className = 'text-amber-400 font-bold';
+        document.getElementById('langAlt').innerText = 'EN';
+        document.getElementById('langAlt').className = 'text-white/60 font-medium';
+      } else {
+        document.getElementById('langLabel').innerText = 'EN';
+        document.getElementById('langLabel').className = 'text-sky-400 font-bold';
+        document.getElementById('langAlt').innerText = 'VN';
+        document.getElementById('langAlt').className = 'text-white/60 font-medium';
+      }
+      document.getElementById('langToggleBtn').title = ui.langTooltip;
+    }
+
+    // UPDATE UI TO GIVEN SLIDE INDEX
+    function updateSlide(index, direction = 'right') {
+      if (isTransitioning && direction !== 'none') return;
+      isTransitioning = true;
+      currentIndex = index;
+      const slide = FLORA_SLIDES[currentIndex];
+      const nextSlideData = FLORA_SLIDES[(currentIndex + 1) % FLORA_SLIDES.length];
+      const data = slide[currentLang];
+      const nextData = nextSlideData[currentLang];
+
+      // 1. Update Dynamic Accent Colors
+      document.documentElement.style.setProperty('--accent-color', slide.accentColor);
+      document.documentElement.style.setProperty('--accent-glow', slide.glowColor);
+
+      // 2. Animate Hero Flower Transition (unless it's just a language toggle)
+      const flowerWrapper = document.getElementById('flowerWrapper');
+      const heroFlowerImg = document.getElementById('heroFlowerImg');
+      
+      if (direction !== 'none') {
+        const animClass = direction === 'right' ? 'flower-enter-right' : 'flower-enter-left';
+        flowerWrapper.classList.remove('flower-enter-right', 'flower-enter-left');
+        void flowerWrapper.offsetWidth; // trigger reflow
+        heroFlowerImg.src = slide.image;
+        flowerWrapper.classList.add(animClass);
+      } else {
+        heroFlowerImg.src = slide.image;
+      }
+
+      // 3. Update Left Column Text with Stagger Animation
+      const leftColElements = ['speciesTag', 'speciesTitle', 'speciesDesc', 'speciesMeta'];
+      leftColElements.forEach(id => {
+        const el = document.getElementById(id);
+        el.classList.remove('text-slide-up');
+        void el.offsetWidth;
+        el.classList.add('text-slide-up');
+      });
+
+      document.getElementById('tagFamilyText').innerText = data.tag;
+      document.getElementById('speciesTitle').innerText = data.title;
+      document.getElementById('speciesDesc').innerText = data.desc;
+      document.getElementById('metaOriginKey').innerText = data.originKey;
+      document.getElementById('metaOrigin').innerText = data.origin;
+      document.getElementById('metaFamilyKey').innerText = data.familyKey;
+      document.getElementById('metaFamily').innerText = data.family;
+
+      // 4. Update Right Card Thumbnails and Text
+      document.getElementById('thumbCurrent').src = slide.macro;
+      document.getElementById('thumbNext').src = nextSlideData.macro;
+      document.getElementById('cardHeading').innerText = data.cardHeading;
+      document.getElementById('cardBody').innerText = data.cardBody;
+      document.getElementById('cardAuthor').innerText = data.author;
+
+      // 5. Update Carousel Dots Indicator (Both PC & Mobile)
+      const carouselBars = document.querySelectorAll('.carousel-dot-bar');
+      carouselBars.forEach((bar, idx) => {
+        if (idx === currentIndex) {
+          bar.className = 'carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-6 bg-white';
+        } else {
+          bar.className = 'carousel-dot-bar block h-1.5 rounded-full transition-all duration-300 w-1.5 bg-white/30 group-hover:bg-white/60';
+        }
+      });
+
+      document.getElementById('slideCounter').innerText = `0${currentIndex + 1} / 05`;
+
+      // Show/Hide Mystery Cat Interactive Hint
+      const catTapHint = document.getElementById('catTapHint');
+      if (slide.isCat) {
+        catTapHint.classList.remove('hidden');
+        catTapHint.innerText = currentLang === 'vi' ? '✦ Chạm vào chú mèo xem chuyện gì xảy ra ✦' : '✦ Tap the cat to see what happens ✦';
+      } else {
+        catTapHint.classList.add('hidden');
+      }
+
+      // 6. Update Modal Texts
+      document.getElementById('modalCategory').style.color = slide.accentColor;
+      document.getElementById('modalCategory').innerText = data.modalCategory;
+      document.getElementById('modalTitle').innerText = data.title;
+      document.getElementById('modalScientific').innerText = data.modalScientific;
+      document.getElementById('modalDetail1').innerText = data.detail1;
+      document.getElementById('modalDetail2').innerText = data.detail2;
+      document.getElementById('modalBloomsKey').innerText = data.modalBloomsKey;
+      document.getElementById('modalBlooms').innerText = data.modalBlooms;
+      document.getElementById('modalHeightKey').innerText = data.modalHeightKey;
+      document.getElementById('modalHeight').innerText = data.modalHeight;
+      document.getElementById('modalSunKey').innerText = data.modalSunKey;
+      document.getElementById('modalSun').innerText = data.modalSun;
+
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 650);
+    }
+
+    function nextSlide() {
+      const nextIdx = (currentIndex + 1) % FLORA_SLIDES.length;
+      updateSlide(nextIdx, 'right');
+    }
+
+    function prevSlide() {
+      const prevIdx = (currentIndex - 1 + FLORA_SLIDES.length) % FLORA_SLIDES.length;
+      updateSlide(prevIdx, 'left');
+    }
+
+    function goToSlide(idx) {
+      if (idx === currentIndex) return;
+      const dir = idx > currentIndex ? 'right' : 'left';
+      updateSlide(idx, dir);
+    }
+
+    // Keyboard Arrow Controls
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'Escape') {
+        closeDetailModal();
+      }
+    });
+
+    // Enhanced Touch Swipe & Drag Navigation for Mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+
+    window.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = true;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = currentX - touchStartX;
+      const diffY = currentY - touchStartY;
+      
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 20) {
+        if (e.cancelable) e.preventDefault();
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35) {
+        if (diffX < 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+    }, { passive: true });
+
+    // Interactive 3D Parallax Tilt for Hero Flower on Mousemove
+    const stage = document.getElementById('flowerWrapper');
+    window.addEventListener('mousemove', (e) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dx = (e.clientX - cx) / cx;
+      const dy = (e.clientY - cy) / cy;
+      stage.style.transform = `perspective(1000px) rotateY(${dx * 9}deg) rotateX(${-dy * 7}deg)`;
+    });
+
+
+    // ================= GRAND BOUQUET SCREEN ENGINE =================
+    let audioCtx = null;
+    let isSoundOn = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playNote(freq, startTime, duration = 0.5) {
+      if (!isSoundOn) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.2, startTime + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.05);
+      } catch (e) {}
+    }
+
+    function playCelebrationChord() {
+      if (!isSoundOn) return;
+      initAudio();
+      const chord = [523.25, 659.25, 783.99, 987.77, 1046.50, 1318.51];
+      chord.forEach((freq, idx) => {
+        playNote(freq, audioCtx.currentTime + idx * 0.08, 0.7);
+      });
+    }
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      document.getElementById('soundMutedIcon').classList.toggle('hidden', isSoundOn);
+      document.getElementById('soundActiveIcon').classList.toggle('hidden', !isSoundOn);
+      if (isSoundOn) {
+        initAudio();
+        playNote(783.99, audioCtx.currentTime, 0.4);
+      }
+    }
+
+    // Interactive bloom click bounce
+    function flowerBurstPop(el) {
+      el.classList.remove('pop-bounce');
+      void el.offsetWidth;
+      el.classList.add('pop-bounce');
+
+      if (typeof confetti === 'function') {
+        const rect = el.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        confetti({
+          particleCount: 16,
+          spread: 45,
+          origin: { x, y },
+          colors: ['#FFE082', '#FF8A80', '#F8BBD0', '#C8E6C9', '#FFD54F']
+        });
+      }
+      playNote(880, audioCtx ? audioCtx.currentTime : 0, 0.35);
+    }
+
+    function fireMegaCelebration() {
+      burstFlowersRadial(24);
+      playCelebrationChord();
+
+      if (typeof confetti === 'function') {
+        const colors = ['#B71C1C', '#D4AF37', '#FFD54F', '#FF8A80', '#FFFFFF'];
+        confetti({
+          particleCount: 80,
+          spread: 90,
+          origin: { y: 0.55 },
+          colors: colors
+        });
+      }
+    }
+
+    // ================= FALLING FLOWER RAIN ENGINE =================
+    const FLOWER_SOURCES = [
+      'images/flowers/lily_thumb.png',
+      'images/flowers/sunflower_thumb.png',
+      'images/flowers/rose_thumb.png',
+      'images/flowers/blossoms_thumb.png'
+    ];
+
+    let flowerImgs = [];
+    let flowerParticles = [];
+    let isFlowerRainActive = true;
+    let flowerCanvas = null;
+    let flowerCtx = null;
+    let flowerReqId = null;
+    let mousePos = { x: -9999, y: -9999 };
+    let burstParticles = [];
+
+    class FallingFlower {
+      constructor(canvasWidth, canvasHeight, isInitial = false) {
+        this.w = canvasWidth;
+        this.h = canvasHeight;
+        this.img = flowerImgs[Math.floor(Math.random() * flowerImgs.length)];
+        this.reset(isInitial);
+      }
+
+      reset(isInitial = false) {
+        this.img = flowerImgs[Math.floor(Math.random() * flowerImgs.length)];
+        this.baseSize = Math.random() * 30 + 34;
+        this.size = this.baseSize;
+        this.x = Math.random() * (this.w + 100) - 50;
+        this.y = isInitial ? Math.random() * (this.h + 100) - 50 : -this.size - Math.random() * 120;
+        
+        this.vy = Math.random() * 1.1 + 0.85;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        
+        this.swayFreq = Math.random() * 0.018 + 0.012;
+        this.swayAmp = Math.random() * 1.8 + 1.2;
+        this.swayOffset = Math.random() * Math.PI * 2;
+        
+        this.rot = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.014;
+        this.opacity = Math.random() * 0.2 + 0.8;
+      }
+
+      update() {
+        this.y += this.vy;
+        this.x += this.vx + Math.sin(this.y * this.swayFreq + this.swayOffset) * this.swayAmp;
+        this.rot += this.rotSpeed;
+
+        const dx = this.x - mousePos.x;
+        const dy = this.y - mousePos.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 110 && dist > 0) {
+          const force = (110 - dist) / 110;
+          this.x += (dx / dist) * force * 3.5;
+          this.y += (dy / dist) * force * 2.5;
+        }
+
+        if (this.y > this.h + this.size + 30 || this.x < -this.size - 60 || this.x > this.w + this.size + 60) {
+          this.reset(false);
+        }
+      }
+
+      draw(ctx) {
+        if (!this.img || !this.img.complete || this.img.naturalWidth === 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.opacity;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+
+        ctx.shadowColor = 'rgba(70, 50, 40, 0.12)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 4;
+
+        ctx.drawImage(this.img, -this.size / 2, -this.size / 2, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    class BurstFlowerParticle {
+      constructor(cx, cy) {
+        this.img = flowerImgs[Math.floor(Math.random() * flowerImgs.length)];
+        this.x = cx;
+        this.y = cy;
+        this.size = Math.random() * 26 + 32;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8.5 + 4.5;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed - 2.5;
+        this.rot = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.08;
+        this.opacity = 1.0;
+        this.gravity = 0.18;
+        this.decay = Math.random() * 0.012 + 0.014;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += this.gravity;
+        this.vx *= 0.96;
+        this.rot += this.rotSpeed;
+        this.opacity -= this.decay;
+      }
+
+      draw(ctx) {
+        if (this.opacity <= 0 || !this.img || !this.img.complete) return;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        ctx.shadowColor = 'rgba(70, 50, 40, 0.18)';
+        ctx.shadowBlur = 8;
+        ctx.drawImage(this.img, -this.size / 2, -this.size / 2, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    function burstFlowersRadial(num = 28) {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight * 0.45;
+      for (let i = 0; i < num; i++) {
+        burstParticles.push(new BurstFlowerParticle(cx, cy));
+      }
+    }
+
+    function initFlowerRain() {
+      flowerCanvas = document.getElementById('fallingFlowersCanvas');
+      if (!flowerCanvas) return;
+      flowerCtx = flowerCanvas.getContext('2d');
+
+      function resizeCanvas() {
+        flowerCanvas.width = window.innerWidth;
+        flowerCanvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      flowerImgs = [];
+      let loaded = 0;
+      FLOWER_SOURCES.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          loaded++;
+          if (loaded === FLOWER_SOURCES.length) {
+            setupParticles();
+          }
+        };
+        flowerImgs.push(img);
+      });
+    }
+
+    function setupParticles() {
+      flowerParticles = [];
+      const count = window.innerWidth < 640 ? 16 : 28;
+      for (let i = 0; i < count; i++) {
+        flowerParticles.push(new FallingFlower(flowerCanvas.width, flowerCanvas.height, true));
+      }
+      if (!flowerReqId) {
+        loopFlowerRain();
+      }
+    }
+
+    function loopFlowerRain() {
+      if (!flowerCtx || !flowerCanvas) return;
+      flowerCtx.clearRect(0, 0, flowerCanvas.width, flowerCanvas.height);
+
+      if (isFlowerRainActive) {
+        flowerParticles.forEach(p => {
+          p.update();
+          p.draw(flowerCtx);
+        });
+      }
+
+      for (let i = burstParticles.length - 1; i >= 0; i--) {
+        const bp = burstParticles[i];
+        bp.update();
+        bp.draw(flowerCtx);
+        if (bp.opacity <= 0) {
+          burstParticles.splice(i, 1);
+        }
+      }
+
+      flowerReqId = requestAnimationFrame(loopFlowerRain);
+    }
+
+    function toggleFlowerRain() {
+      isFlowerRainActive = !isFlowerRainActive;
+      const label = document.getElementById('flowersToggleLabel');
+      if (label) {
+        label.innerText = isFlowerRainActive ? (currentLang === 'vi' ? 'Mưa hoa: BẬT' : 'Rain: ON') : (currentLang === 'vi' ? 'Mưa hoa: TẮT' : 'Rain: OFF');
+      }
+    }
+
+    // ================= HERO FLOWER CLICK & SCREEN TRANSITION =================
+    function handleFlowerClick() {
+      const slide = FLORA_SLIDES[currentIndex];
+      if (slide.isCat) {
+        openBouquetView();
+      } else {
+        nextSlide();
+      }
+    }
+
+    // Transition crossfade: Flora dark web <-> Grand Bouquet screen
+    function openBouquetView() {
+      const overlay = document.getElementById('bouquetScreenOverlay');
+      overlay.classList.remove('pointer-events-none');
+      overlay.classList.remove('opacity-0');
+      overlay.classList.add('opacity-100');
+
+      // Update bilingual texts
+      if (currentLang === 'vi') {
+        document.getElementById('btnBackToFlora').innerText = 'Quay lại vườn hoa';
+        document.getElementById('bouquetScreenTitle').innerText = 'Đóa Hoa Dành Cho Bạn';
+        document.getElementById('bouquetScreenSub').innerText = 'Rê chuột hoặc chạm vào từng bông hoa để tương tác';
+      } else {
+        document.getElementById('btnBackToFlora').innerText = 'Back to Flora';
+        document.getElementById('bouquetScreenTitle').innerText = 'A Bouquet For You';
+        document.getElementById('bouquetScreenSub').innerText = 'Hover or tap each individual bloom to interact';
+      }
+
+      if (!flowerCanvas) {
+        initFlowerRain();
+      }
+      isFlowerRainActive = true;
+      burstFlowersRadial(20);
+      playCelebrationChord();
+    }
+
+    function closeBouquetView() {
+      const overlay = document.getElementById('bouquetScreenOverlay');
+      overlay.classList.remove('opacity-100');
+      overlay.classList.add('opacity-0');
+      overlay.classList.add('pointer-events-none');
+    }
+
+    // Modal Controller
+    function openDetailModal() {
+      document.getElementById('detailModal').classList.remove('hidden');
+      document.getElementById('detailModal').classList.add('flex');
+    }
+
+    function closeDetailModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+      document.getElementById('detailModal').classList.remove('flex');
+    }
+
+    // Initialize Language & First Slide
+    window.addEventListener('DOMContentLoaded', () => {
+      updateGlobalUITexts();
+      updateSlide(0, 'none');
+    });
+  </script>
+</body>
+</html>
